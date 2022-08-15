@@ -22,8 +22,8 @@ void setup() {
  // digitalWrite(oPinPESensor, HIGH); //COIL -> HIGH == OFF
  // digitalWrite(oPinClutch, HIGH);//COIL -> low == ON
 
-  digitalWrite(oPinPWSensor, LOW);
-  digitalWrite(oPinPESensor, LOW); //moj pcb -> LOW == OFF
+  digitalWrite(oPinPWSensor, LOW);                            //sensor near printhead
+  digitalWrite(oPinPESensor, LOW); //moj pcb -> LOW == OFF    //paper sensor
   digitalWrite(oPinClutch, LOW);//moj pcb -> HIGH == ON
 
  
