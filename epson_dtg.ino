@@ -1,10 +1,10 @@
-const int iPinStartPrintSensor = 2;
-const int iPinTableStop = 12;
-const int iPinTableStart = 4;
-const int oPinPESensor = 5;
-const int oPinClutch = 6;
-const int oPinPWSensor = 7;
-bool startedPrinting = false;//, stoppedPrinting = false;
+const int iPinStartPrintSensor = 2;     //limit switch behind pump
+const int iPinTableStop = 12;           //limit switch table stop
+const int iPinTableStart = 4;           //limit switch table start  
+const int oPinPESensor = 5;             //paper sensor
+const int oPinClutch = 6;               //relay clutch
+const int oPinPWSensor = 7;             //sensor near printhead
+bool startedPrinting = false;
 const int CLUTCH_DELAY_AFTER_PE = 200;
 const int PE_DELAY = 500;                 //DON'T CHANGE
 
@@ -37,15 +37,16 @@ void loop() {
 
   if(startedPrinting)
   {
-    if(!(digitalRead(iPinTableStart))) //jesli wcisnieta krańcówka startu druku
+    if(!(digitalRead(iPinTableStart))) //if start table limit switch is switched
     {
           delay(PE_DELAY);
-          digitalWrite(oPinPESensor, HIGH); //zewrzyj styki PE sensora
+          digitalWrite(oPinPESensor, HIGH); //PE SENSOR relay ON
           delay(CLUTCH_DELAY_AFTER_PE);
-          digitalWrite(oPinClutch,HIGH);//sprzęgło
+          digitalWrite(oPinClutch,HIGH); //clutch
           //Serial.println("CLUTCH ON");
           
           //delay(1000);
+          //sensor near printhead needs to be "cheated"
           digitalWrite(oPinPWSensor, HIGH); //oszukanie czujnika koło głowicy
           delay(1500);
           digitalWrite(oPinPWSensor, LOW); 
@@ -60,16 +61,18 @@ void loop() {
     
   }
 
-  if(!(digitalRead(iPinTableStop))) //jesli wcisnieta krańcówka stopu druku
+  if(!(digitalRead(iPinTableStop))) //if table switched limit switch - table stop
   {
-    digitalWrite(oPinClutch, LOW); //odlacz sprzegło
-    digitalWrite(oPinPESensor, LOW); //czujnik PE wylacz
+    digitalWrite(oPinClutch, LOW); //clutch OFF
+    digitalWrite(oPinPESensor, LOW); //PE SENSOR OFF
   }
  
 }
 
 //czujnik za stacją dokującą (zbocze opadające)
 //eliminacja drgań styków
+
+//limit switch behind pump, delete bouncing 
 void startPrint_INTERRUPT(){
   static unsigned long lastTime;
   unsigned long timeNow = millis();
